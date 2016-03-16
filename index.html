@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Babylon.js - Pryme Playground</title>
+	<script src="http://www.babylonjs.com/poly2tri.js"></script>
+    <script src="./js/dat.gui.min.js"></script>
+	<!--x-tag-->
+	<link href="./css/splitbox.css" rel="stylesheet" />
+	<script src="./js/x-tag-core.min.js"></script>
+	<script src="./js/splitbox.js"></script>
+    <!-- jszip -->
+    <script src="./js/jszip.min.js"></script>
+    <script src="./js/fileSaver.js"></script>
+    <!-- Bootstrap -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <!--Monaco-->
+    <link rel="stylesheet" type="text/css" media="screen" data-name="vs/editor/editor.main" href="http://yoda.blob.core.windows.net/monaco/vs/editor/editor.main.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="http://yoda.blob.core.windows.net/monaco/vs/editor/css/vs-theme.css" />
+    <script type="text/javascript">
+    var require = {
+    	baseUrl: "http://yoda.blob.core.windows.net/monaco"
+    };
+    </script>
+    <script type="text/javascript" src="http://yoda.blob.core.windows.net/monaco/vs/loader.js"></script>
+    <script type="text/javascript" src="http://yoda.blob.core.windows.net/monaco/vs/editor/editor.main.nls.js"></script>
+    <script type="text/javascript" src="http://yoda.blob.core.windows.net/monaco/vs/editor/editor.main.js"></script>
+    <script type="text/javascript" src="http://yoda.blob.core.windows.net/monaco/vs/languages/javascript/javascript.js"></script>
+    <script type="text/javascript" src="http://yoda.blob.core.windows.net/monaco/vs/languages/css/css.js"></script>
+    <script type="text/javascript" src="http://yoda.blob.core.windows.net/monaco/vs/languages/html/html.js"></script>
+    <!-- Babylon.js -->
+    <script src="http://www.babylonjs.com/cannon.js"></script>
+    <script src="http://www.babylonjs.com/Oimo.js"></script>
+	<script src="http://www.babylonjs.com/babylon.js"></script>
+	<script src="./js/proceduralTextures/babylon.fireMaterial.min.js"></script>
+	<script src="./js/proceduralTextures/babylon.waterMaterial.min.js"></script>
+	<script src="./js/proceduralTextures/babylon.lavaMaterial.min.js"></script>
+	<script src="./js/proceduralTextures/babylon.normalMaterial.min.js"></script>
+	<script src="./js/proceduralTextures/babylon.pbrMaterial.min.js"></script>
+	<script src="./js/proceduralTextures/babylon.skyMaterial.min.js"></script>
+	<script src="./js/proceduralTextures/babylon.triPlanarMaterial.min.js"></script>
+	<script src="./js/proceduralTextures/babylon.terrainMaterial.min.js"></script>
+	<script src="./js/proceduralTextures/babylon.gradientMaterial.min.js"></script>
+	<script src="./js/proceduralTextures/babylon.furMaterial.min.js"></script>
+    <script src="./js/proceduralTextures/babylon.gridMaterial.min.js"></script>
+    
+    <script src="./js/proceduralTextures/babylon.brickProceduralTexture.min.js"></script>
+    <script src="./js/proceduralTextures/babylon.cloudProceduralTexture.min.js"></script>
+    <script src="./js/proceduralTextures/babylon.fireProceduralTexture.min.js"></script>
+    <script src="./js/proceduralTextures/babylon.grassProceduralTexture.min.js"></script>
+    <script src="./js/proceduralTextures/babylon.marbleProceduralTexture.min.js"></script>
+    <script src="./js/proceduralTextures/babylon.roadProceduralTexture.min.js"></script>
+    <script src="./js/proceduralTextures/babylon.starfieldProceduralTexture.min.js"></script>
+    <script src="./js/proceduralTextures/babylon.woodProceduralTexture.min.js"></script>    
+    
+    <link href="./css/index.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner" id="topbar">
+            <a class="brand largeOnly" href="#">Babylon.js Playground</a>
+            <div class="btn-group">
+                <button class="btn" id="runButton">Run</button>
+                <button class="btn" id="saveButton">Save</button>
+                <button class="btn desktopOnly" id="zipButton">Get .zip</button>
+                <button class="btn desktopOnly" id="newButton">New</button>
+                <button class="btn desktopOnly" id="clearButton">Clear</button>
+            </div>
+            <div class="btn-group desktopOnly">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    <span id="currentFontSize">Font: 12</span>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="sizeList">
+                    <li><a href="#" onclick="setFontSize(12);">12</a></li>
+                    <li><a href="#" onclick="setFontSize(14);">14</a></li>
+                    <li><a href="#" onclick="setFontSize(16);">16</a></li>
+                    <li><a href="#" onclick="setFontSize(18);">18</a></li>
+                    <li><a href="#" onclick="setFontSize(20);">20</a></li>
+                    <li><a href="#" onclick="setFontSize(22);">22</a></li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-sm" id="editorButton">-Editor</button>
+                <button class="btn btn-sm" id="debugButton">+Debug layer</button>
+            </div>
+            <div class="btn-group pull-right">
+                <button class="btn" id="fullscreenButton">Fullscreen</button>
+            </div>
+            <div class="btn-group pull-right">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                    <span id="currentScript">Predefined scripts</span>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="scriptsList"></ul>
+            </div>
+        </div>
+    </div>
+
+	<x-splitbox>
+		<div id="jsEditor"></div>
+		<div splitter></div>
+		<div id="canvasZone">
+			<canvas id="renderCanvas" touch-action="none"></canvas>
+		</div>
+	</x-splitbox>
+
+    <span class="label" id="fpsLabel">FPS</span>
+
+    <div id="errorZone">
+    </div>
+
+    <div class="navbar navbar-inverse navbar-fixed-bottom">
+        <div class="navbar-inner">
+            <ul class="nav pull-left">
+                <li id="statusBar"></li>
+            </ul>
+            <ul class="nav pull-right">
+                <li><a href="http://www.html5gamedevs.com/forum/16-babylonjs/">Forum</a></li>
+                <li><a class="largeOnly" href="http://www.babylonjs.com/cyos">CYOS</a></li>
+                <li><a class="largeOnly" href="http://www.babylonjs.com/sandbox">Sandbox</a></li>
+                <li><a class="desktopOnly" href="http://doc.babylonjs.com">Documentation</a></li>
+                <li>-</li>
+                <li><a href="http://babylonjs-playground.azurewebsites.net/Babylonjs_playground_TOU.txt">Terms of Use</a></li>
+                <li><a href="http://go.microsoft.com/fwlink/?LinkId=264945">Privacy & Cookies</a></li>
+                <li><a href="http://go.microsoft.com/fwlink/?LinkId=264947">Trademarks</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/index.js"></script>
+    <script src="https://pryme8.github.io/WUKONG/WUKONG.js"></script>
+</body>
+</html>
