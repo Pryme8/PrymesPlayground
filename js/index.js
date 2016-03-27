@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
     var jsEditor = Monaco.Editor.create(document.getElementById("jsEditor"), {
         value: "",
         mode: "text/javascript",
@@ -160,20 +160,28 @@
     }
 
     var showError = function (errorMessage, errorEvent) {
-        var errorContent = '<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><h4>Compilation error</h4>Line '
-		if(errorEvent){errorContent += errorEvent.lineNumber+':'+errorEvent.columnNumber+' - ';	}
-        	errorContent += errorMessage + '</div>';
-			document.getElementById("errorZone").innerHTML = errorContent;
-			setTimeout(function(){$('#errorZone').animate({opacity:0},600,function(){
-				
-				$("div.alert.alert-error").children('button.close').click();
-				$('#errorZone').css("opacity","initial");
-			});}, 4800);
+        var errorContent = '<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><h4>Compilation error</h4>'
+        if (errorEvent) {
+            var regEx = /\(.+:(\d+):(\d+)\)\n/g;
+
+            var match = regEx.exec(errorEvent.stack);
+            if (match) {
+                errorContent += "Line ";
+                var lineNumber = match[1];
+                var columnNumber = match[2];
+
+                errorContent += lineNumber + ':' + columnNumber + ' - ';
+            }
+        }
+
+        errorContent += errorMessage + '</div>';
+
+        document.getElementById("errorZone").innerHTML = errorContent;
     }
-	
+
     compileAndRun = function () {
         try {
-
+			
             if (!BABYLON.Engine.isSupported()) {
                 showError("Your browser does not support WebGL", null);
                 return;
@@ -186,7 +194,7 @@
 
             var canvas = document.getElementById("renderCanvas");
             engine = new BABYLON.Engine(canvas, true);
-
+            document.getElementById("errorZone").innerHTML = "";
             document.getElementById("statusBar").innerHTML = "Loading assets...Please wait";
 
             engine.runRenderLoop(function () {
@@ -409,34 +417,34 @@
         }
     }
 
-    var toggleEditor = function() {
+    var toggleEditor = function () {
         var editorButton = document.getElementById("editorButton");
         var scene = engine.scenes[0];
-    	
-        if (editorButton.innerHTML === "-Editor"){
-        	editorButton.innerHTML = "+Editor";
-    		document.getElementById("jsEditor").style.display = "none";
-    		document.getElementById("canvasZone").style.flexBasis = "100%";  	
+
+        if (editorButton.innerHTML === "-Editor") {
+            editorButton.innerHTML = "+Editor";
+            document.getElementById("jsEditor").style.display = "none";
+            document.getElementById("canvasZone").style.flexBasis = "100%";
         } else {
             editorButton.innerHTML = "-Editor";
-    		document.getElementById("jsEditor").style.display = "block";
-    		document.getElementById("canvasZone").style.flexBasis = undefined;
+            document.getElementById("jsEditor").style.display = "block";
+            document.getElementById("canvasZone").style.flexBasis = undefined;
         }
         engine.resize();
 
         if (scene.debugLayer.isVisible()) {
             scene.debugLayer.hide();
-            scene.debugLayer.show();   
+            scene.debugLayer.show();
         }
     }
 
-    var toggleDebug = function() {
+    var toggleDebug = function () {
         var debugButton = document.getElementById("debugButton");
         var scene = engine.scenes[0];
-        
-        if (debugButton.innerHTML === "+Debug layer"){
+
+        if (debugButton.innerHTML === "+Debug layer") {
             debugButton.innerHTML = "-Debug layer";
-            scene.debugLayer.show();    
+            scene.debugLayer.show();
         } else {
             debugButton.innerHTML = "+Debug layer";
             scene.debugLayer.hide();
@@ -451,10 +459,10 @@
     document.getElementById("clearButton").addEventListener("click", clear);
     document.getElementById("editorButton").addEventListener("click", toggleEditor);
     document.getElementById("debugButton").addEventListener("click", toggleDebug);
-
+	
     // Snippet
     var save = function () {
-        var xmlHttp = new XMLHttpRequest();
+	  var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState === 4) {
                 if (xmlHttp.status === 201) {
@@ -484,6 +492,7 @@
     }
 
     document.getElementById("saveButton").addEventListener("click", save);
+    document.getElementById("mainTitle").innerHTML = "Babylon.js v" + BABYLON.Engine.Version + " Playground";
 
     var previousHash = "";
 
