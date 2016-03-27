@@ -460,6 +460,19 @@
     document.getElementById("editorButton").addEventListener("click", toggleEditor);
     document.getElementById("debugButton").addEventListener("click", toggleDebug);
 	
+	//Navigation Overwrites
+	var exitPrompt = function (e){
+    e = e || window.event;
+    var message = 'Changes have not been saved, do you really want to navigate away?';
+    if (e) 
+    {
+        e.returnValue = message;
+    }
+    return message;
+	};
+	
+	window.onbeforeunload = exitPrompt;
+	
     // Snippet
     var save = function () {
 	  var xmlHttp = new XMLHttpRequest();
