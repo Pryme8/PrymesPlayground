@@ -45,10 +45,12 @@
 
     jsEditor.addListener("change", function () {
         if (blockEditorChange) {
-            return;
+			return;
         }
 
         document.getElementById("currentScript").innerHTML = "Custom";
+		document.getElementById('safemodeToggle').checked = true;
+		
     });
 
     var snippetUrl = "http://babylonjs-api.azurewebsites.net/api/snippet";
@@ -462,13 +464,16 @@
 	
 	//Navigation Overwrites
 	var exitPrompt = function (e){
-    e = e || window.event;
-    var message = 'Changes have not been saved, do you really want to navigate away?';
+	var safeToggle = document.getElementById("safemodeToggle");
+    if(safeToggle.checked){
+	e = e || window.event;
+    var message = 'This page is asking you to confirm that you want to leave - data you have entered may not be saved.';
     if (e) 
     {
         e.returnValue = message;
     }
     return message;
+	}
 	};
 	
 	window.onbeforeunload = exitPrompt;
